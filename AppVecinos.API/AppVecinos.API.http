@@ -1,0 +1,6 @@
+@AppVecinos.API_HostAddress = http://localhost:5081
+
+GET {{AppVecinos.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
