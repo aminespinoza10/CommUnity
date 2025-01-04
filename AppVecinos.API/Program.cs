@@ -29,7 +29,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-#region "Neigbors Endpoints"
+#region "Neighbors Endpoints"
 
 app.MapGet("/neighbors", async (INeighborService service) => await service.GetNeighborsAsync())
                  .WithName("GetNeighbors")
