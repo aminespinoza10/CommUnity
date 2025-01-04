@@ -1,6 +1,5 @@
 using AppVecinos.API.Models;
 using AppVecinos.API.Repositories;
-using System;
 
 namespace AppVecinos.API.Data
 {

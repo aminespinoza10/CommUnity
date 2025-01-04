@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using AppVecinos.API.Models;
 
 namespace AppVecinos.API.Services
