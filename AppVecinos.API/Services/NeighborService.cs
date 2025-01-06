@@ -31,6 +31,10 @@ namespace AppVecinos.API.Services
 
         public async Task<Neighbor> UpdateNeighborAsync(Neighbor neighbor)
         {
+            if (await _unitOfWork.NeighborRepository.GetByIdAsync(neighbor.Id) == null)
+            {
+                return null;
+            }
             _unitOfWork.NeighborRepository.Update(neighbor);
             await _unitOfWork.SaveAsync();
             return neighbor;
