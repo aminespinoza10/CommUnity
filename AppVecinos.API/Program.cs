@@ -17,6 +17,7 @@ builder.Services.AddDbContext<DataContext>(options =>
 //Add Services
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<INeighborService, NeighborService>();
+builder.Services.AddScoped<IFeeService, FeeService>();
 
 var app = builder.Build();
 
@@ -48,39 +49,107 @@ app.MapPost("/neighbors", async (INeighborService service, Neighbor dto) =>
           .WithTags("Neighbors")
           .WithOpenApi(operation => 
                     {
-                        operation.Description = "Endpoint that create a new neighbor.";
+                        operation.Description = "Endpoint that creates a new neighbor.";
                         return operation;
                     });
 
 app.MapGet("/neighbors/{id}", async (INeighborService service, int id) =>
         {
             var result = await service.GetNeighborByIdAsync(id);
-            return result != null ? Results.Ok(result) : Results.NotFound($"Neighbor with ID {id} not found.");
+            return Results.Ok(result);
         }).WithName("GetNeighbor")
           .WithTags("Neighbors")
           .WithOpenApi(operation => 
                     {
-                        operation.Description = "Endpoint that find an specific neighbor by Id.";
+                        operation.Description = "Endpoint that finds an specific neighbor by Id.";
                         return operation;
                     });
 
 app.MapDelete("/neighbors/{id}", async (INeighborService service, int id) =>
-        {
+        {         
             await service.DeleteNeighborAsync(id);
-            return Results.NoContent();
+            return Results.Ok();
         }).WithName("DeleteNeighbor")
           .WithTags("Neighbors")
           .WithOpenApi(operation => 
                     {
-                        operation.Description = "Endpoint that delete an specific neighbor by Id.";
+                        operation.Description = "Endpoint that deletes an specific neighbor by Id.";
+                        return operation;
+                    });
+
+app.MapPut("/neighbors", async (INeighborService service, Neighbor dto) =>
+        {
+            var result = await service.UpdateNeighborAsync(dto);
+            return Results.Ok(result);
+        }).WithName("UpdateNeighbor")
+          .WithTags("Neighbors")
+          .WithOpenApi(operation => 
+                    {
+                        operation.Description = "Endpoint that updates an specific neighbor.";
                         return operation;
                     });
 
 #endregion
 
-app.Run();
+#region "Fees Endpoints"
+app.MapGet("/fees", async (IFeeService service) => await service.GetFeesAsync())
+                 .WithName("GetFees")
+                 .WithTags("Fees")
+                 .WithOpenApi(operation => 
+                    {
+                        operation.Description = "Endpoint that returns the list of feed.";
+                        return operation;
+                    });
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
+app.MapPost("/fees", async (IFeeService service, Fee dto) =>
+        {
+            var result = await service.CreateFeeAsync(dto);
+            return Results.Created($"/fees/{result.Id}", result);
+        }).WithName("CreateFee")
+          .WithTags("Fees")
+          .WithOpenApi(operation => 
+                    {
+                        operation.Description = "Endpoint that creates a new fee.";
+                        return operation;
+                    });
+
+app.MapGet("/fees/{id}", async (IFeeService service, int id) =>
+        {
+            var result = await service.GetFeeByIdAsync(id);
+            return Results.Ok(result);
+        }).WithName("GetFee")
+          .WithTags("Fees")
+          .WithOpenApi(operation => 
+                    {
+                        operation.Description = "Endpoint that finds an specific fee by Id.";
+                        return operation;
+                    });
+
+app.MapPut("/fees", async (IFeeService service, Fee dto) =>
+        {
+            var result = await service.UpdateFeeAsync(dto);
+            return Results.Ok(result);
+        }).WithName("UpdateFee")
+          .WithTags("Fees")
+          .WithOpenApi(operation => 
+                    {
+                        operation.Description = "Endpoint that updates an specific fee.";
+                        return operation;
+                    });
+
+app.MapDelete("/fees/{id}", async (IFeeService service, int id) =>
+        {
+            await service.DeleteFeeAsync(id);
+            return Results.Ok();
+        }).WithName("DeleteFee")
+          .WithTags("Fees")
+          .WithOpenApi(operation => 
+                    {
+                        operation.Description = "Endpoint that deletes an specific fee by Id.";
+                        return operation;
+                    });
+
+
+#endregion
+
+app.Run();

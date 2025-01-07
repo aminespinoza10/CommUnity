@@ -31,6 +31,10 @@ namespace AppVecinos.API.Services
 
         public async Task<Neighbor> UpdateNeighborAsync(Neighbor neighbor)
         {
+            if (await _unitOfWork.NeighborRepository.GetByIdAsync(neighbor.Id) == null)
+            {
+                throw new KeyNotFoundException($"Neighbor with id {neighbor.Id} not found.");
+            }
             _unitOfWork.NeighborRepository.Update(neighbor);
             await _unitOfWork.SaveAsync();
             return neighbor;
@@ -38,6 +42,10 @@ namespace AppVecinos.API.Services
 
         public async Task DeleteNeighborAsync(int id)
         {
+            if (await _unitOfWork.NeighborRepository.GetByIdAsync(id) == null)
+            {
+                throw new KeyNotFoundException($"Neighbor with id {id} not found.");
+            }
             await _unitOfWork.NeighborRepository.Remove(id);
             await _unitOfWork.SaveAsync();
         }

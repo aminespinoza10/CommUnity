@@ -6,11 +6,11 @@ namespace AppVecinos.API.Data
     public class UnitOfWork : IUnitOfWork
     {
         private readonly DataContext _context;
-        private IGenericRepository<Neighbor> _neighborRepository;
-        private IGenericRepository<Fee> _feeRepository;
-        private IGenericRepository<Payment> _paymentRepository;
-        private IGenericRepository<Outcome> _outcomeRepository;
-        private IGenericRepository<Balance> _balanceRepository;
+        private IGenericRepository<Neighbor>? _neighborRepository;
+        private IGenericRepository<Fee>? _feeRepository;
+        private IGenericRepository<Payment>? _paymentRepository;
+        private IGenericRepository<Outcome>? _outcomeRepository;
+        private IGenericRepository<Balance>? _balanceRepository;
 
         public UnitOfWork(DataContext context)
         {
