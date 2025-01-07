@@ -18,6 +18,7 @@ builder.Services.AddDbContext<DataContext>(options =>
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<INeighborService, NeighborService>();
 builder.Services.AddScoped<IFeeService, FeeService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
 
 var app = builder.Build();
 
@@ -149,6 +150,66 @@ app.MapDelete("/fees/{id}", async (IFeeService service, int id) =>
                         return operation;
                     });
 
+
+#endregion
+
+#region "Payments Endpoints"
+
+app.MapGet("/payments", async (IPaymentService service) => await service.GetPaymentsAsync())
+                 .WithName("GetPayments")
+                 .WithTags("Payments")
+                 .WithOpenApi(operation => 
+                    {
+                        operation.Description = "Endpoint that returns the list of payments.";
+                        return operation;
+                    });
+
+app.MapPost("/payments", async (IPaymentService service, Payment model) =>    
+        {
+            var result = await service.CreatePaymentAsync(model);
+            return Results.Created($"/payments/{result.Id}", result);
+        }).WithName("CreatePayment")
+          .WithTags("Payments")
+          .WithOpenApi(operation => 
+                    {
+                        operation.Description = "Endpoint that creates a new payment.";
+                        return operation;
+                    });
+app.MapGet("/payments/neighbors/{id}", async (IPaymentService service, int id) =>
+        {
+            var result = await service.GetPaymentsByNeighborIdAsync(id);
+            return Results.Ok(result);
+        }).WithName("GetPaymentsByNeighborId")
+          .WithTags("Payments")
+          .WithOpenApi(operation => 
+                    {
+                        operation.Description = "Endpoint that returns the list of payments by neighbor Id.";
+                        return operation;
+                    });
+
+app.MapGet("/payments/fees/{id}", async (IPaymentService service, int id) =>
+        {
+            var result = await service.GetPaymentsByFeeIdAsync(id);
+            return Results.Ok(result);
+        }).WithName("GetPaymentsByFeeId")
+        .WithTags("Payments")
+        .WithOpenApi(operation => 
+            {
+                operation.Description = "Endpoint that returns the list of payments by fee Id.";
+                return operation;
+            });                
+
+app.MapGet("/payments/date/{dateTime}", async (IPaymentService service, DateTime dateTime) =>
+        {
+            var result = await service.GetPaymentsByDateAsync(dateTime);
+            return Results.Ok(result);
+        }).WithName("GetPaymentsByDate")
+          .WithTags("Payments")
+          .WithOpenApi(operation => 
+                    {
+                        operation.Description = "Endpoint that returns the list of payments by date.";
+                        return operation;
+                    });
 
 #endregion
 
