@@ -31,9 +31,9 @@ namespace AppVecinos.API.Services
 
         public async Task<Fee> UpdateFeeAsync(Fee fee)
         {
-            if (await _unitOfWork.NeighborRepository.GetByIdAsync(fee.Id) == null)
+            if (await _unitOfWork.FeeRepository.GetByIdAsync(fee.Id) == null)
             {
-                return null;
+                throw new KeyNotFoundException($"Fee with id {fee.Id} not found.");
             }
             _unitOfWork.FeeRepository.Update(fee);
             await _unitOfWork.SaveAsync();
@@ -42,6 +42,10 @@ namespace AppVecinos.API.Services
 
         public async Task DeleteFeeAsync(int id)
         {
+            if (await _unitOfWork.FeeRepository.GetByIdAsync(id) == null)
+            {
+                throw new KeyNotFoundException($"Fee with id {id} not found.");
+            }
             await _unitOfWork.FeeRepository.Remove(id);
             await _unitOfWork.SaveAsync();
         }

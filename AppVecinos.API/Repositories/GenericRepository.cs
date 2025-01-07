@@ -14,7 +14,11 @@ namespace AppVecinos.API.Repositories
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<T> GetByIdAsync(int id) => await _context.Set<T>().FindAsync(id);
+        public async Task<T> GetByIdAsync(int id)
+        {
+            var entity = await _context.Set<T>().FindAsync(id) ?? throw new InvalidOperationException($"Entity with id {id} not found.");
+            return entity;
+        }
 
         public async Task<IEnumerable<T>> GetAllAsync() => await _context.Set<T>().ToListAsync();
 

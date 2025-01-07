@@ -5,7 +5,7 @@ namespace AppVecinos.API.Models
         public int Id { get; set; }
         public required string Concept { get; set; }
         public required string Year { get; set; }
-        public double Amount { get; set; }        
+        public required double Amount { get; set; }        
     }
 
 }
