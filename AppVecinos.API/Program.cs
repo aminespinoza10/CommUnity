@@ -19,6 +19,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<INeighborService, NeighborService>();
 builder.Services.AddScoped<IFeeService, FeeService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<IOutcomeService, OutcomeService>();
 
 var app = builder.Build();
 
@@ -208,6 +209,55 @@ app.MapGet("/payments/date/{dateTime}", async (IPaymentService service, DateTime
           .WithOpenApi(operation => 
                     {
                         operation.Description = "Endpoint that returns the list of payments by date.";
+                        return operation;
+                    });
+
+#endregion
+
+#region "Outcomes Endpoints"
+
+app.MapGet("/outcomes", async (IOutcomeService service) => await service.GetOutcomesAsync())
+                 .WithName("GetOutcomes")
+                 .WithTags("Outcomes")
+                 .WithOpenApi(operation => 
+                    {
+                        operation.Description = "Endpoint that returns the list of outcomes.";
+                        return operation;
+                    });
+
+ app.MapPost("/outcomes", async (IOutcomeService service, Outcome model) =>    
+        {
+            var result = await service.CreateOutcomeAsync(model);
+            return Results.Created($"/outcomes/{result.Id}", result);
+        }).WithName("CreateOutcome")
+          .WithTags("Outcomes")
+          .WithOpenApi(operation => 
+                    {
+                        operation.Description = "Endpoint that creates a new outcome.";
+                        return operation;
+                    });                   
+
+app.MapGet("/outcomes/year/{year}", async (IOutcomeService service, string year) =>
+        {
+            var result = await service.GetOutcomesByYearAsync(year);
+            return Results.Ok(result);
+        }).WithName("GetOutcomesByYear")
+            .WithTags("Outcomes")
+            .WithOpenApi(operation => 
+            {
+                operation.Description = "Endpoint that returns the list of outcomes by year.";
+                return operation;
+            });
+
+app.MapGet("/outcomes/month/{month}", async (IOutcomeService service, string month) =>
+        {
+            var result = await service.GetOutcomesByMonthAsync(month);
+            return Results.Ok(result);
+        }).WithName("GetOutcomesByMonth")
+        .WithTags("Outcomes")
+        .WithOpenApi(operation => 
+                    {
+                        operation.Description = "Endpoint that returns the list of outcomes by month.";
                         return operation;
                     });
 
