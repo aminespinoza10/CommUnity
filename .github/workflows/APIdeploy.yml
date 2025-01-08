@@ -19,7 +19,7 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     - name: Build API image
       run: | 
-        docker build --platform linux --tag aminespinoza/coffeeshop:latest -f src/Dockerfile .
+        docker build --platform linux --tag aminespinoza/vecinosapi:latest -f src/Dockerfile .
     - name: Publish API image to Docker Hub
       run: |
-        docker push aminespinoza/coffeeshop:latest
+        docker push aminespinoza/vecinosapi:latest
