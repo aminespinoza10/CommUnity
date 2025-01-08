@@ -44,9 +44,9 @@ app.MapGet("/neighbors", async (INeighborService service) => await service.GetNe
                         return operation;
                     });
 
-app.MapPost("/neighbors", async (INeighborService service, Neighbor dto) =>
+app.MapPost("/neighbors", async (INeighborService service, Neighbor model) =>
         {
-            var result = await service.CreateNeighborAsync(dto);
+            var result = await service.CreateNeighborAsync(model);
             return Results.Created($"/neighbors/{result.Id}", result);
         }).WithName("CreateNeighbor")
           .WithTags("Neighbors")
@@ -80,9 +80,9 @@ app.MapDelete("/neighbors/{id}", async (INeighborService service, int id) =>
                         return operation;
                     });
 
-app.MapPut("/neighbors", async (INeighborService service, Neighbor dto) =>
+app.MapPut("/neighbors", async (INeighborService service, Neighbor model) =>
         {
-            var result = await service.UpdateNeighborAsync(dto);
+            var result = await service.UpdateNeighborAsync(model);
             return Results.Ok(result);
         }).WithName("UpdateNeighbor")
           .WithTags("Neighbors")
@@ -104,9 +104,9 @@ app.MapGet("/fees", async (IFeeService service) => await service.GetFeesAsync())
                         return operation;
                     });
 
-app.MapPost("/fees", async (IFeeService service, Fee dto) =>
+app.MapPost("/fees", async (IFeeService service, Fee model) =>
         {
-            var result = await service.CreateFeeAsync(dto);
+            var result = await service.CreateFeeAsync(model);
             return Results.Created($"/fees/{result.Id}", result);
         }).WithName("CreateFee")
           .WithTags("Fees")
@@ -128,9 +128,9 @@ app.MapGet("/fees/{id}", async (IFeeService service, int id) =>
                         return operation;
                     });
 
-app.MapPut("/fees", async (IFeeService service, Fee dto) =>
+app.MapPut("/fees", async (IFeeService service, Fee model) =>
         {
-            var result = await service.UpdateFeeAsync(dto);
+            var result = await service.UpdateFeeAsync(model);
             return Results.Ok(result);
         }).WithName("UpdateFee")
           .WithTags("Fees")
