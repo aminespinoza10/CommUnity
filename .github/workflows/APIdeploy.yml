@@ -5,6 +5,9 @@ on:
     branches: [ "main" ]
     paths:
       - 'AppVecinos.API/**'
+    tags:
+    - 'v*.*.*'
+    
 jobs:
   build:
     name: Docker build
@@ -17,9 +20,12 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: Extract version from tag
+      id: vars
+      run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
     - name: Build API image
       run: | 
-        docker build --platform linux --tag aminespinoza/coffeeshop:latest -f src/Dockerfile .
+        docker build --platform linux --tag aminespinoza/vecinosapi:${{ env.VERSION }} -f src/Dockerfile .
     - name: Publish API image to Docker Hub
       run: |
-        docker push aminespinoza/coffeeshop:latest
+        docker push aminespinoza/coffeeshop:${{ env.VERSION }}
