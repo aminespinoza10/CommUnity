@@ -12,7 +12,7 @@ namespace AppVecinos.API.Data
         public DbSet<Fee> Fees { get; set; }
         
         public DbSet<Payment> Payments { get; set; }
-        public DbSet<Balance> Balances { get; set; }
+        public DbSet<Balance> Balance { get; set; }
         
         public DbSet<Outcome> Outcomes { get; set; }  
     }

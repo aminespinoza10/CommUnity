@@ -20,6 +20,7 @@ builder.Services.AddScoped<INeighborService, NeighborService>();
 builder.Services.AddScoped<IFeeService, FeeService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IOutcomeService, OutcomeService>();
+builder.Services.AddScoped<IBalanceService, BalanceService>();
 
 var app = builder.Build();
 
@@ -258,6 +259,55 @@ app.MapGet("/outcomes/month/{month}", async (IOutcomeService service, string mon
         .WithOpenApi(operation => 
                     {
                         operation.Description = "Endpoint that returns the list of outcomes by month.";
+                        return operation;
+                    });
+
+#endregion
+
+#region "Balances Endpoints"
+
+app.MapGet("/balances", async (IBalanceService service) => await service.GetBalancesAsync())
+                 .WithName("GetBalances")
+                 .WithTags("Balances")
+                 .WithOpenApi(operation => 
+                    {
+                        operation.Description = "Endpoint that returns the list of balances.";
+                        return operation;
+                    });
+
+app.MapPost("/balances", async (IBalanceService service, Balance model) =>    
+        {
+            var result = await service.CreateBalanceAsync(model);
+            return Results.Created($"/balances/{result.Id}", result);
+        }).WithName("CreateBalance")
+          .WithTags("Balances")
+          .WithOpenApi(operation => 
+                    {
+                        operation.Description = "Endpoint that creates a new balance.";
+                        return operation;
+                    });
+
+app.MapGet("/balances/year/{year}", async (IBalanceService service, string year) =>
+        {
+            var result = await service.GetBalancesByYearAsync(year);
+            return Results.Ok(result);
+        }).WithName("GetBalancesByYear")
+        .WithTags("Balances")
+        .WithOpenApi(operation => 
+                    {
+                        operation.Description = "Endpoint that returns the list of balances by year.";
+                        return operation;
+                    });
+
+app.MapGet("/balances/period/{period}", async (IBalanceService service, string period) =>
+        {
+            var result = await service.GetBalancesByPeriodAsync(period);
+            return Results.Ok(result);
+        }).WithName("GetBalancesByPeriod")
+        .WithTags("Balances")
+        .WithOpenApi(operation => 
+                    {
+                        operation.Description = "Endpoint that returns the list of balances by period.";
                         return operation;
                     });
 
