@@ -22,6 +22,11 @@ namespace AppVecinos.API.Services
             return await _unitOfWork.NeighborRepository.GetByIdAsync(id);
         }
 
+        public async Task<Neighbor> GetNeighborByCredentialsAsync(string username, string password)
+        {
+            return (await _unitOfWork.NeighborRepository.FindAsync(n => n.User == username && n.Password == password)).FirstOrDefault();
+        }
+
         public async Task<Neighbor> CreateNeighborAsync(Neighbor neighbor)
         {
             await _unitOfWork.NeighborRepository.AddAsync(neighbor);

@@ -2,13 +2,42 @@ using Microsoft.EntityFrameworkCore;
 using AppVecinos.API.Data;
 using AppVecinos.API.Services;
 using AppVecinos.API.Models;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configuración del token JWT
+var jwtKey = "NeighborsSecretKey2025!_NeighborsSecretKey2025!"; // Clave secreta (debe ser más segura y almacenada en un lugar seguro)
+var jwtIssuer = "AppVecinosAPI";
+var jwtAudience = "Neighbors";
+
+// Agregar el servicio de autenticación con JWT
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtIssuer,
+            ValidAudience = jwtAudience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+        };
+    });
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAuthorization();
 
 //Add DbContext
 builder.Services.AddDbContext<DataContext>(options =>
@@ -32,6 +61,23 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapPost("/login", async (INeighborService service, LoginRequest loginRequest) =>
+{
+     var result = await service.GetNeighborByCredentialsAsync(loginRequest.Username, loginRequest.Password);
+    if (result != null){
+        var token = GenerateJwtToken(loginRequest.Username);
+        Console.WriteLine($"Token generado: {token}");
+        return Results.Ok(new { Token = token }); 
+    }
+    else
+    {
+        return Results.Unauthorized();
+    }
+});
+
 
 #region "Neighbors Endpoints"
 
@@ -42,7 +88,8 @@ app.MapGet("/neighbors", async (INeighborService service) => await service.GetNe
                     {
                         operation.Description = "Endpoint that returns the list of neighbors.";
                         return operation;
-                    });
+                    })
+                    .RequireAuthorization();
 
 app.MapPost("/neighbors", async (INeighborService service, Neighbor model) =>
         {
@@ -51,10 +98,11 @@ app.MapPost("/neighbors", async (INeighborService service, Neighbor model) =>
         }).WithName("CreateNeighbor")
           .WithTags("Neighbors")
           .WithOpenApi(operation => 
-                    {
-                        operation.Description = "Endpoint that creates a new neighbor.";
-                        return operation;
-                    });
+            {
+                operation.Description = "Endpoint that creates a new neighbor.";
+                return operation;
+            })
+            .RequireAuthorization();
 
 app.MapGet("/neighbors/{id}", async (INeighborService service, int id) =>
         {
@@ -63,10 +111,11 @@ app.MapGet("/neighbors/{id}", async (INeighborService service, int id) =>
         }).WithName("GetNeighbor")
           .WithTags("Neighbors")
           .WithOpenApi(operation => 
-                    {
-                        operation.Description = "Endpoint that finds an specific neighbor by Id.";
-                        return operation;
-                    });
+            {
+                operation.Description = "Endpoint that finds an specific neighbor by Id.";
+                return operation;
+            })
+            .RequireAuthorization();
 
 app.MapDelete("/neighbors/{id}", async (INeighborService service, int id) =>
         {         
@@ -75,10 +124,11 @@ app.MapDelete("/neighbors/{id}", async (INeighborService service, int id) =>
         }).WithName("DeleteNeighbor")
           .WithTags("Neighbors")
           .WithOpenApi(operation => 
-                    {
-                        operation.Description = "Endpoint that deletes an specific neighbor by Id.";
-                        return operation;
-                    });
+            {
+                operation.Description = "Endpoint that deletes an specific neighbor by Id.";
+                return operation;
+            })
+            .RequireAuthorization();
 
 app.MapPut("/neighbors", async (INeighborService service, Neighbor model) =>
         {
@@ -87,10 +137,11 @@ app.MapPut("/neighbors", async (INeighborService service, Neighbor model) =>
         }).WithName("UpdateNeighbor")
           .WithTags("Neighbors")
           .WithOpenApi(operation => 
-                    {
-                        operation.Description = "Endpoint that updates an specific neighbor.";
-                        return operation;
-                    });
+            {
+                operation.Description = "Endpoint that updates an specific neighbor.";
+                return operation;
+            })
+            .RequireAuthorization();
 
 #endregion
 
@@ -102,7 +153,8 @@ app.MapGet("/fees", async (IFeeService service) => await service.GetFeesAsync())
                     {
                         operation.Description = "Endpoint that returns the list of feed.";
                         return operation;
-                    });
+                    })
+                    .RequireAuthorization();
 
 app.MapPost("/fees", async (IFeeService service, Fee model) =>
         {
@@ -111,10 +163,11 @@ app.MapPost("/fees", async (IFeeService service, Fee model) =>
         }).WithName("CreateFee")
           .WithTags("Fees")
           .WithOpenApi(operation => 
-                    {
-                        operation.Description = "Endpoint that creates a new fee.";
-                        return operation;
-                    });
+            {
+                operation.Description = "Endpoint that creates a new fee.";
+                return operation;
+            })
+            .RequireAuthorization();
 
 app.MapGet("/fees/{id}", async (IFeeService service, int id) =>
         {
@@ -123,10 +176,11 @@ app.MapGet("/fees/{id}", async (IFeeService service, int id) =>
         }).WithName("GetFee")
           .WithTags("Fees")
           .WithOpenApi(operation => 
-                    {
-                        operation.Description = "Endpoint that finds an specific fee by Id.";
-                        return operation;
-                    });
+            {
+                operation.Description = "Endpoint that finds an specific fee by Id.";
+                return operation;
+            })
+            .RequireAuthorization();
 
 app.MapPut("/fees", async (IFeeService service, Fee model) =>
         {
@@ -135,10 +189,11 @@ app.MapPut("/fees", async (IFeeService service, Fee model) =>
         }).WithName("UpdateFee")
           .WithTags("Fees")
           .WithOpenApi(operation => 
-                    {
-                        operation.Description = "Endpoint that updates an specific fee.";
-                        return operation;
-                    });
+            {
+                operation.Description = "Endpoint that updates an specific fee.";
+                return operation;
+            })
+            .RequireAuthorization();
 
 app.MapDelete("/fees/{id}", async (IFeeService service, int id) =>
         {
@@ -147,10 +202,11 @@ app.MapDelete("/fees/{id}", async (IFeeService service, int id) =>
         }).WithName("DeleteFee")
           .WithTags("Fees")
           .WithOpenApi(operation => 
-                    {
-                        operation.Description = "Endpoint that deletes an specific fee by Id.";
-                        return operation;
-                    });
+            {
+                operation.Description = "Endpoint that deletes an specific fee by Id.";
+                return operation;
+            })
+          .RequireAuthorization();
 
 
 #endregion
@@ -164,7 +220,8 @@ app.MapGet("/payments", async (IPaymentService service) => await service.GetPaym
                     {
                         operation.Description = "Endpoint that returns the list of payments.";
                         return operation;
-                    });
+                    })
+                    .RequireAuthorization();
 
 app.MapPost("/payments", async (IPaymentService service, Payment model) =>    
         {
@@ -173,10 +230,12 @@ app.MapPost("/payments", async (IPaymentService service, Payment model) =>
         }).WithName("CreatePayment")
           .WithTags("Payments")
           .WithOpenApi(operation => 
-                    {
-                        operation.Description = "Endpoint that creates a new payment.";
-                        return operation;
-                    });
+                {
+                    operation.Description = "Endpoint that creates a new payment.";
+                    return operation;
+                })
+                .RequireAuthorization();
+
 app.MapGet("/payments/neighbors/{id}", async (IPaymentService service, int id) =>
         {
             var result = await service.GetPaymentsByNeighborIdAsync(id);
@@ -184,10 +243,11 @@ app.MapGet("/payments/neighbors/{id}", async (IPaymentService service, int id) =
         }).WithName("GetPaymentsByNeighborId")
           .WithTags("Payments")
           .WithOpenApi(operation => 
-                    {
-                        operation.Description = "Endpoint that returns the list of payments by neighbor Id.";
-                        return operation;
-                    });
+            {
+                operation.Description = "Endpoint that returns the list of payments by neighbor Id.";
+                return operation;
+            })
+            .RequireAuthorization();
 
 app.MapGet("/payments/fees/{id}", async (IPaymentService service, int id) =>
         {
@@ -196,10 +256,11 @@ app.MapGet("/payments/fees/{id}", async (IPaymentService service, int id) =>
         }).WithName("GetPaymentsByFeeId")
         .WithTags("Payments")
         .WithOpenApi(operation => 
-            {
-                operation.Description = "Endpoint that returns the list of payments by fee Id.";
-                return operation;
-            });                
+        {
+            operation.Description = "Endpoint that returns the list of payments by fee Id.";
+            return operation;
+        })
+        .RequireAuthorization();                
 
 app.MapGet("/payments/date/{dateTime}", async (IPaymentService service, DateTime dateTime) =>
         {
@@ -208,10 +269,11 @@ app.MapGet("/payments/date/{dateTime}", async (IPaymentService service, DateTime
         }).WithName("GetPaymentsByDate")
           .WithTags("Payments")
           .WithOpenApi(operation => 
-                    {
-                        operation.Description = "Endpoint that returns the list of payments by date.";
-                        return operation;
-                    });
+            {
+                operation.Description = "Endpoint that returns the list of payments by date.";
+                return operation;
+            })
+            .RequireAuthorization();
 
 #endregion
 
@@ -224,7 +286,8 @@ app.MapGet("/outcomes", async (IOutcomeService service) => await service.GetOutc
                     {
                         operation.Description = "Endpoint that returns the list of outcomes.";
                         return operation;
-                    });
+                    })
+                    .RequireAuthorization();
 
  app.MapPost("/outcomes", async (IOutcomeService service, Outcome model) =>    
         {
@@ -233,22 +296,24 @@ app.MapGet("/outcomes", async (IOutcomeService service) => await service.GetOutc
         }).WithName("CreateOutcome")
           .WithTags("Outcomes")
           .WithOpenApi(operation => 
-                    {
-                        operation.Description = "Endpoint that creates a new outcome.";
-                        return operation;
-                    });                   
+            {
+                operation.Description = "Endpoint that creates a new outcome.";
+                return operation;
+            })
+            .RequireAuthorization();                   
 
 app.MapGet("/outcomes/year/{year}", async (IOutcomeService service, string year) =>
         {
             var result = await service.GetOutcomesByYearAsync(year);
             return Results.Ok(result);
         }).WithName("GetOutcomesByYear")
-            .WithTags("Outcomes")
-            .WithOpenApi(operation => 
-            {
-                operation.Description = "Endpoint that returns the list of outcomes by year.";
-                return operation;
-            });
+        .WithTags("Outcomes")
+        .WithOpenApi(operation => 
+        {
+            operation.Description = "Endpoint that returns the list of outcomes by year.";
+            return operation;
+        })
+        .RequireAuthorization();
 
 app.MapGet("/outcomes/month/{month}", async (IOutcomeService service, string month) =>
         {
@@ -257,10 +322,11 @@ app.MapGet("/outcomes/month/{month}", async (IOutcomeService service, string mon
         }).WithName("GetOutcomesByMonth")
         .WithTags("Outcomes")
         .WithOpenApi(operation => 
-                    {
-                        operation.Description = "Endpoint that returns the list of outcomes by month.";
-                        return operation;
-                    });
+        {
+            operation.Description = "Endpoint that returns the list of outcomes by month.";
+            return operation;
+        })
+        .RequireAuthorization();
 
 #endregion
 
@@ -273,7 +339,8 @@ app.MapGet("/balances", async (IBalanceService service) => await service.GetBala
                     {
                         operation.Description = "Endpoint that returns the list of balances.";
                         return operation;
-                    });
+                    })
+                    .RequireAuthorization();
 
 app.MapPost("/balances", async (IBalanceService service, Balance model) =>    
         {
@@ -282,10 +349,11 @@ app.MapPost("/balances", async (IBalanceService service, Balance model) =>
         }).WithName("CreateBalance")
           .WithTags("Balances")
           .WithOpenApi(operation => 
-                    {
-                        operation.Description = "Endpoint that creates a new balance.";
-                        return operation;
-                    });
+            {
+                operation.Description = "Endpoint that creates a new balance.";
+                return operation;
+            })
+            .RequireAuthorization();
 
 app.MapGet("/balances/year/{year}", async (IBalanceService service, string year) =>
         {
@@ -294,10 +362,11 @@ app.MapGet("/balances/year/{year}", async (IBalanceService service, string year)
         }).WithName("GetBalancesByYear")
         .WithTags("Balances")
         .WithOpenApi(operation => 
-                    {
-                        operation.Description = "Endpoint that returns the list of balances by year.";
-                        return operation;
-                    });
+        {
+            operation.Description = "Endpoint that returns the list of balances by year.";
+            return operation;
+        })
+        .RequireAuthorization();
 
 app.MapGet("/balances/period/{period}", async (IBalanceService service, string period) =>
         {
@@ -306,11 +375,33 @@ app.MapGet("/balances/period/{period}", async (IBalanceService service, string p
         }).WithName("GetBalancesByPeriod")
         .WithTags("Balances")
         .WithOpenApi(operation => 
-                    {
-                        operation.Description = "Endpoint that returns the list of balances by period.";
-                        return operation;
-                    });
+        {
+            operation.Description = "Endpoint that returns the list of balances by period.";
+            return operation;
+        })
+        .RequireAuthorization();
 
 #endregion
+
+string GenerateJwtToken(string username)
+{
+    var claims = new[]
+    {
+        new Claim(ClaimTypes.Name, username),
+        new Claim(ClaimTypes.Role, "User") // Puedes personalizar roles
+    };
+
+    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
+    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+    var token = new JwtSecurityToken(
+        issuer: jwtIssuer,
+        audience: jwtAudience,
+        claims: claims,
+        expires: DateTime.Now.AddHours(1),
+        signingCredentials: creds);
+
+    return new JwtSecurityTokenHandler().WriteToken(token);
+}
 
 app.Run();

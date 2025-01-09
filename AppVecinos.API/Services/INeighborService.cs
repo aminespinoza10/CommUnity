@@ -6,6 +6,7 @@ namespace AppVecinos.API.Services
     {
         Task<IEnumerable<Neighbor>> GetNeighborsAsync();
         Task<Neighbor> GetNeighborByIdAsync(int id);
+        Task<Neighbor> GetNeighborByCredentialsAsync(string username, string password);
         Task<Neighbor> CreateNeighborAsync(Neighbor neighbor);
         Task<Neighbor> UpdateNeighborAsync(Neighbor neighbor);
         Task DeleteNeighborAsync(int id);
