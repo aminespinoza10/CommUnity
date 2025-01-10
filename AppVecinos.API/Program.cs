@@ -12,12 +12,13 @@ using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configuración del token JWT
-var jwtKey = "NeighborsSecretKey2025!_NeighborsSecretKey2025!"; // Clave secreta (debe ser más segura y almacenada en un lugar seguro)
+// Token JWT configuration
+var jwtKey = "NeighborsSecretKey2025!_NeighborsSecretKey2025!"; 
 var jwtIssuer = "AppVecinosAPI";
 var jwtAudience = "Neighbors";
 
-// Agregar el servicio de autenticación con JWT
+
+// JWT authentication parameters
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -383,12 +384,17 @@ app.MapGet("/balances/period/{period}", async (IBalanceService service, string p
 
 #endregion
 
+/// <summary>
+/// Method to generate a JWT token.
+/// </summary>
+/// <param name="username">value to create Claim.</param>
+/// <returns>JWT token.</returns>
 string GenerateJwtToken(string username)
 {
     var claims = new[]
     {
         new Claim(ClaimTypes.Name, username),
-        new Claim(ClaimTypes.Role, "User") // Puedes personalizar roles
+        new Claim(ClaimTypes.Role, "User") 
     };
 
     var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
