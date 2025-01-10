@@ -13,9 +13,10 @@ using System.Security.Claims;
 var builder = WebApplication.CreateBuilder(args);
 
 // Token JWT configuration
-var jwtKey = "NeighborsSecretKey2025!_NeighborsSecretKey2025!"; 
-var jwtIssuer = "AppVecinosAPI";
-var jwtAudience = "Neighbors";
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var secretKey = jwtSettings["SecretKey"];
+var issuer = jwtSettings["Issuer"];
+var audience = jwtSettings["Audience"];
 
 
 // JWT authentication parameters
@@ -28,9 +29,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = jwtIssuer,
-            ValidAudience = jwtAudience,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+            ValidIssuer = issuer,
+            ValidAudience = audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
         };
     });
 
@@ -397,12 +398,12 @@ string GenerateJwtToken(string username)
         new Claim(ClaimTypes.Role, "User") 
     };
 
-    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
+    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey ));
     var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
     var token = new JwtSecurityToken(
-        issuer: jwtIssuer,
-        audience: jwtAudience,
+        issuer: issuer,
+        audience: audience,
         claims: claims,
         expires: DateTime.Now.AddHours(1),
         signingCredentials: creds);
