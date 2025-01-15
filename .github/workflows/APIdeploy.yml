@@ -2,7 +2,7 @@ name: Deploy Vecinos API
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "amin-patch1" ]
     paths:
       - 'AppVecinos.API/**'
     
