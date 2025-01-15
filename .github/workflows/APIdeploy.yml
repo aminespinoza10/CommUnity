@@ -26,3 +26,6 @@ jobs:
     - name: Publish API image to Docker Hub
       run: |
         docker push aminespinoza/vecinosapi:${{ env.VERSION }}
+    - name: Confirm process is done
+      run: |
+        echo 'Process is done'
