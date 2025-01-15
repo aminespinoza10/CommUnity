@@ -28,7 +28,7 @@ jobs:
         docker build --platform linux --tag aminespinoza/vecinosapi:latest .
     - name: Publish API image to Docker Hub
       run: |
-        docker push aminespinoza/vecinosapi:${{ env.VERSION }}
+        docker push aminespinoza/vecinosapi
     - name: Confirm process is done
       run: |
         echo 'Process is done'
