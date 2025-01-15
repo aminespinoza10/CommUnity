@@ -1,6 +1,6 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
-WORKDIR /AppVecinos.API
+WORKDIR /src
 COPY AppVecinos.API.csproj .
 RUN dotnet restore
 COPY . .
