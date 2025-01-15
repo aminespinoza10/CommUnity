@@ -35,11 +35,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
+    options.AddPolicy("UserPolicy", policy => policy.RequireRole("User"));
+});
+
+
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddAuthorization();
 
 //Add DbContext
 builder.Services.AddDbContext<DataContext>(options =>
@@ -70,7 +76,7 @@ app.MapPost("/login", async (INeighborService service, LoginRequest loginRequest
 {
      var result = await service.GetNeighborByCredentialsAsync(loginRequest.Username, loginRequest.Password);
     if (result != null){
-        var token = GenerateJwtToken(loginRequest.Username);
+        var token = GenerateJwtToken(loginRequest.Username, result.Level);
         Console.WriteLine($"Token generado: {token}");
         return Results.Ok(new { Token = token }); 
     }
@@ -84,14 +90,14 @@ app.MapPost("/login", async (INeighborService service, LoginRequest loginRequest
 #region "Neighbors Endpoints"
 
 app.MapGet("/neighbors", async (INeighborService service) => await service.GetNeighborsAsync())
-                 .WithName("GetNeighbors")
-                 .WithTags("Neighbors")
-                 .WithOpenApi(operation => 
-                    {
-                        operation.Description = "Endpoint that returns the list of neighbors.";
-                        return operation;
-                    })
-                    .RequireAuthorization();
+            .WithName("GetNeighbors")
+            .WithTags("Neighbors")
+            .WithOpenApi(operation => 
+            {
+                operation.Description = "Endpoint that returns the list of neighbors.";
+                return operation;
+            })
+            .RequireAuthorization("AdminPolicy");
 
 app.MapPost("/neighbors", async (INeighborService service, Neighbor model) =>
         {
@@ -104,7 +110,7 @@ app.MapPost("/neighbors", async (INeighborService service, Neighbor model) =>
                 operation.Description = "Endpoint that creates a new neighbor.";
                 return operation;
             })
-            .RequireAuthorization();
+            .RequireAuthorization("AdminPolicy");
 
 app.MapGet("/neighbors/{id}", async (INeighborService service, int id) =>
         {
@@ -117,7 +123,7 @@ app.MapGet("/neighbors/{id}", async (INeighborService service, int id) =>
                 operation.Description = "Endpoint that finds an specific neighbor by Id.";
                 return operation;
             })
-            .RequireAuthorization();
+            .RequireAuthorization("AdminPolicy");
 
 app.MapDelete("/neighbors/{id}", async (INeighborService service, int id) =>
         {         
@@ -130,7 +136,7 @@ app.MapDelete("/neighbors/{id}", async (INeighborService service, int id) =>
                 operation.Description = "Endpoint that deletes an specific neighbor by Id.";
                 return operation;
             })
-            .RequireAuthorization();
+            .RequireAuthorization("AdminPolicy");
 
 app.MapPut("/neighbors", async (INeighborService service, Neighbor model) =>
         {
@@ -143,20 +149,20 @@ app.MapPut("/neighbors", async (INeighborService service, Neighbor model) =>
                 operation.Description = "Endpoint that updates an specific neighbor.";
                 return operation;
             })
-            .RequireAuthorization();
+            .RequireAuthorization("AdminPolicy");
 
 #endregion
 
 #region "Fees Endpoints"
 app.MapGet("/fees", async (IFeeService service) => await service.GetFeesAsync())
-                 .WithName("GetFees")
-                 .WithTags("Fees")
-                 .WithOpenApi(operation => 
-                    {
-                        operation.Description = "Endpoint that returns the list of feed.";
-                        return operation;
-                    })
-                    .RequireAuthorization();
+            .WithName("GetFees")
+            .WithTags("Fees")
+            .WithOpenApi(operation => 
+            {
+                operation.Description = "Endpoint that returns the list of feed.";
+                return operation;
+            })
+            .RequireAuthorization("AdminPolicy");
 
 app.MapPost("/fees", async (IFeeService service, Fee model) =>
         {
@@ -169,7 +175,7 @@ app.MapPost("/fees", async (IFeeService service, Fee model) =>
                 operation.Description = "Endpoint that creates a new fee.";
                 return operation;
             })
-            .RequireAuthorization();
+            .RequireAuthorization("AdminPolicy");
 
 app.MapGet("/fees/{id}", async (IFeeService service, int id) =>
         {
@@ -182,7 +188,7 @@ app.MapGet("/fees/{id}", async (IFeeService service, int id) =>
                 operation.Description = "Endpoint that finds an specific fee by Id.";
                 return operation;
             })
-            .RequireAuthorization();
+            .RequireAuthorization("AdminPolicy");
 
 app.MapPut("/fees", async (IFeeService service, Fee model) =>
         {
@@ -195,7 +201,7 @@ app.MapPut("/fees", async (IFeeService service, Fee model) =>
                 operation.Description = "Endpoint that updates an specific fee.";
                 return operation;
             })
-            .RequireAuthorization();
+            .RequireAuthorization("AdminPolicy");
 
 app.MapDelete("/fees/{id}", async (IFeeService service, int id) =>
         {
@@ -208,7 +214,7 @@ app.MapDelete("/fees/{id}", async (IFeeService service, int id) =>
                 operation.Description = "Endpoint that deletes an specific fee by Id.";
                 return operation;
             })
-          .RequireAuthorization();
+          .RequireAuthorization("AdminPolicy");
 
 
 #endregion
@@ -223,7 +229,7 @@ app.MapGet("/payments", async (IPaymentService service) => await service.GetPaym
                         operation.Description = "Endpoint that returns the list of payments.";
                         return operation;
                     })
-                    .RequireAuthorization();
+                    .RequireAuthorization(policy => policy.RequireRole("Admin", "User"));
 
 app.MapPost("/payments", async (IPaymentService service, Payment model) =>    
         {
@@ -236,7 +242,7 @@ app.MapPost("/payments", async (IPaymentService service, Payment model) =>
                     operation.Description = "Endpoint that creates a new payment.";
                     return operation;
                 })
-                .RequireAuthorization();
+                .RequireAuthorization(policy => policy.RequireRole("Admin", "User"));
 
 app.MapGet("/payments/neighbors/{id}", async (IPaymentService service, int id) =>
         {
@@ -249,7 +255,7 @@ app.MapGet("/payments/neighbors/{id}", async (IPaymentService service, int id) =
                 operation.Description = "Endpoint that returns the list of payments by neighbor Id.";
                 return operation;
             })
-            .RequireAuthorization();
+            .RequireAuthorization(policy => policy.RequireRole("Admin", "User"));
 
 app.MapGet("/payments/fees/{id}", async (IPaymentService service, int id) =>
         {
@@ -262,7 +268,7 @@ app.MapGet("/payments/fees/{id}", async (IPaymentService service, int id) =>
             operation.Description = "Endpoint that returns the list of payments by fee Id.";
             return operation;
         })
-        .RequireAuthorization();                
+        .RequireAuthorization(policy => policy.RequireRole("Admin", "User"));                
 
 app.MapGet("/payments/date/{dateTime}", async (IPaymentService service, DateTime dateTime) =>
         {
@@ -275,7 +281,7 @@ app.MapGet("/payments/date/{dateTime}", async (IPaymentService service, DateTime
                 operation.Description = "Endpoint that returns the list of payments by date.";
                 return operation;
             })
-            .RequireAuthorization();
+            .RequireAuthorization(policy => policy.RequireRole("Admin", "User"));
 
 #endregion
 
@@ -289,7 +295,7 @@ app.MapGet("/outcomes", async (IOutcomeService service) => await service.GetOutc
                         operation.Description = "Endpoint that returns the list of outcomes.";
                         return operation;
                     })
-                    .RequireAuthorization();
+                    .RequireAuthorization(policy => policy.RequireRole("AdminPolicy", "UserPolicy"));
 
  app.MapPost("/outcomes", async (IOutcomeService service, Outcome model) =>    
         {
@@ -302,7 +308,7 @@ app.MapGet("/outcomes", async (IOutcomeService service) => await service.GetOutc
                 operation.Description = "Endpoint that creates a new outcome.";
                 return operation;
             })
-            .RequireAuthorization();                   
+            .RequireAuthorization(policy => policy.RequireRole("AdminPolicy", "UserPolicy"));                   
 
 app.MapGet("/outcomes/year/{year}", async (IOutcomeService service, string year) =>
         {
@@ -315,7 +321,7 @@ app.MapGet("/outcomes/year/{year}", async (IOutcomeService service, string year)
             operation.Description = "Endpoint that returns the list of outcomes by year.";
             return operation;
         })
-        .RequireAuthorization();
+        .RequireAuthorization(policy => policy.RequireRole("AdminPolicy", "UserPolicy"));
 
 app.MapGet("/outcomes/month/{month}", async (IOutcomeService service, string month) =>
         {
@@ -328,7 +334,7 @@ app.MapGet("/outcomes/month/{month}", async (IOutcomeService service, string mon
             operation.Description = "Endpoint that returns the list of outcomes by month.";
             return operation;
         })
-        .RequireAuthorization();
+        .RequireAuthorization(policy => policy.RequireRole("AdminPolicy", "UserPolicy"));
 
 #endregion
 
@@ -342,7 +348,7 @@ app.MapGet("/balances", async (IBalanceService service) => await service.GetBala
                         operation.Description = "Endpoint that returns the list of balances.";
                         return operation;
                     })
-                    .RequireAuthorization();
+                    .RequireAuthorization(policy => policy.RequireRole("Admin", "User"));
 
 app.MapPost("/balances", async (IBalanceService service, Balance model) =>    
         {
@@ -355,7 +361,7 @@ app.MapPost("/balances", async (IBalanceService service, Balance model) =>
                 operation.Description = "Endpoint that creates a new balance.";
                 return operation;
             })
-            .RequireAuthorization();
+            .RequireAuthorization(policy => policy.RequireRole("Admin", "User"));
 
 app.MapGet("/balances/year/{year}", async (IBalanceService service, string year) =>
         {
@@ -368,7 +374,7 @@ app.MapGet("/balances/year/{year}", async (IBalanceService service, string year)
             operation.Description = "Endpoint that returns the list of balances by year.";
             return operation;
         })
-        .RequireAuthorization();
+        .RequireAuthorization(policy => policy.RequireRole("Admin", "User"));
 
 app.MapGet("/balances/period/{period}", async (IBalanceService service, string period) =>
         {
@@ -381,7 +387,7 @@ app.MapGet("/balances/period/{period}", async (IBalanceService service, string p
             operation.Description = "Endpoint that returns the list of balances by period.";
             return operation;
         })
-        .RequireAuthorization();
+        .RequireAuthorization(policy => policy.RequireRole("Admin", "User"));
 
 #endregion
 
@@ -390,12 +396,12 @@ app.MapGet("/balances/period/{period}", async (IBalanceService service, string p
 /// </summary>
 /// <param name="username">value to create Claim.</param>
 /// <returns>JWT token.</returns>
-string GenerateJwtToken(string username)
+string GenerateJwtToken(string username, string level)
 {
     var claims = new[]
     {
         new Claim(ClaimTypes.Name, username),
-        new Claim(ClaimTypes.Role, "User") 
+        new Claim(ClaimTypes.Role, level) 
     };
 
     var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey ));
