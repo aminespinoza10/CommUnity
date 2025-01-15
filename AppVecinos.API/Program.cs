@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using AppVecinos.API.Data;
 using AppVecinos.API.Services;
 using AppVecinos.API.Models;
+using AppVecinos.API.Extensions;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -12,35 +13,8 @@ using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Token JWT configuration
-var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-var secretKey = jwtSettings["SecretKey"];
-var issuer = jwtSettings["Issuer"];
-var audience = jwtSettings["Audience"];
-
-
-// JWT authentication parameters
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = issuer,
-            ValidAudience = audience,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
-        };
-    });
-
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
-    options.AddPolicy("UserPolicy", policy => policy.RequireRole("User"));
-});
-
+// Add services to the container.
+builder.Services.AddJwtAuthenticationAndAuthorization(builder.Configuration);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -74,18 +48,15 @@ app.UseAuthorization();
 
 app.MapPost("/login", async (INeighborService service, LoginRequest loginRequest) =>
 {
-     var result = await service.GetNeighborByCredentialsAsync(loginRequest.Username, loginRequest.Password);
-    if (result != null){
-        var token = GenerateJwtToken(loginRequest.Username, result.Level);
-        Console.WriteLine($"Token generado: {token}");
-        return Results.Ok(new { Token = token }); 
-    }
-    else
+    var result = await service.GetNeighborByCredentialsAsync(loginRequest.Username, loginRequest.Password);
+    if (result != null)
     {
-        return Results.Unauthorized();
+        var token = AuthenticationServiceExtensions.GenerateJwtToken(loginRequest.Username, result.Level, builder.Configuration);
+        Console.WriteLine($"Token generado: {token}");
+        return Results.Ok(new { Token = token });
     }
+    return Results.Unauthorized();
 });
-
 
 #region "Neighbors Endpoints"
 
@@ -390,31 +361,5 @@ app.MapGet("/balances/period/{period}", async (IBalanceService service, string p
         .RequireAuthorization(policy => policy.RequireRole("Admin", "User"));
 
 #endregion
-
-/// <summary>
-/// Method to generate a JWT token.
-/// </summary>
-/// <param name="username">value to create Claim.</param>
-/// <returns>JWT token.</returns>
-string GenerateJwtToken(string username, string level)
-{
-    var claims = new[]
-    {
-        new Claim(ClaimTypes.Name, username),
-        new Claim(ClaimTypes.Role, level) 
-    };
-
-    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey ));
-    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-    var token = new JwtSecurityToken(
-        issuer: issuer,
-        audience: audience,
-        claims: claims,
-        expires: DateTime.Now.AddHours(1),
-        signingCredentials: creds);
-
-    return new JwtSecurityTokenHandler().WriteToken(token);
-}
 
 app.Run();
