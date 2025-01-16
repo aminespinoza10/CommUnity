@@ -2,7 +2,7 @@ name: Deploy Vecinos API
 
 on:
   push:
-    branches: [ "amin-patch1" ]
+    branches: [ "main" ]
 #    paths:
 #      - 'AppVecinos.API/**'
     
@@ -26,9 +26,7 @@ jobs:
     - name: Build API image
       run: | 
         docker build --platform linux --tag aminespinoza/vecinosapi:latest .
+        
     - name: Publish API image to Docker Hub
       run: |
         docker push aminespinoza/vecinosapi
-    - name: Confirm process is done
-      run: |
-        echo 'Process is done'
