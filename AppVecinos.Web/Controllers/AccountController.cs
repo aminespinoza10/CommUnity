@@ -15,9 +15,10 @@ public class AccountController : Controller
 
     public IActionResult Login()
     {
+        ViewData["HideMenu"] = true;
         return View();
     }
-    
+
     [HttpPost]
     public async Task<IActionResult> Login(string username, string password)
     {
