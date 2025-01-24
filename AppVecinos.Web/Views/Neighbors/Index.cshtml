@@ -1,0 +1,47 @@
+@model IEnumerable<AppVecinos.Web.Models.Neighbor>
+@{
+    ViewData["Title"] = "Neighbors";
+}
+
+<h2 class="text-center text-primary mt-5">Lista de vecinos</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Agregar nuevo vecino
+    </a>
+</p>
+
+
+<table class="table table-striped table-hover table-bordered text-center mt-4">
+    <thead class="table-primary">
+        <tr>
+            <th>Nombre</th>
+            <th>Número</th>
+            <th>Nivel</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var neighbor in Model)
+        {
+            <tr>
+                <td>@neighbor.Name</td>
+                <td>@neighbor.Number</td>
+                <td>@neighbor.Level</td>
+                <td>
+                    <span class="badge @(neighbor.Status == "Activo" ? "bg-success" : "bg-danger")">
+                        @neighbor.Status
+                    </span>
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@neighbor.Id" class="btn btn-info btn-sm">Detalles</a>
+                    <a asp-action="Edit" asp-route-id="@neighbor.Id" class="btn btn-warning btn-sm">Editar</a>
+                    <a asp-action="Delete" asp-route-id="@neighbor.Id" class="btn btn-danger btn-sm">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+

@@ -1,4 +1,6 @@
 
+using AppVecinos.Web.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,6 +9,11 @@ builder.Services.AddHttpClient<AuthService>(client =>
 {
     client.BaseAddress = new Uri(ApiRoutes.BaseUrl);
 });
+builder.Services.AddHttpContextAccessor();
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+
+builder.Services.AddScoped<INeighborService, NeighborService>();
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>

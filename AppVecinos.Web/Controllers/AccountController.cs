@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace AppVecinos.Web.Controllers;
 
@@ -22,16 +23,18 @@ public class AccountController : Controller
     [HttpPost]
     public async Task<IActionResult> Login(string username, string password)
     {
-        var token = await _authService.LoginAsync(username, password);
-
-        if (token != null)
+        var response = await _authService.LoginAsync(username, password);
+         
+        if (response != null)
         {
-            // Guardar el token en una cookie o en sesión
+            var authResponse = JsonSerializer.Deserialize<AuthResponse>(response);
+            var token = authResponse.token;
+            Console.WriteLine($"Token generado: {token}");
             HttpContext.Session.SetString("AuthToken", token);
+
             return RedirectToAction("Index", "Home");
         }
 
-        // Mostrar mensaje de error si el login falla
         ViewBag.ErrorMessage = "Usuario o contraseña incorrectos.";
         return View();
     }

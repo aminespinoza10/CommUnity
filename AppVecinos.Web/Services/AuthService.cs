@@ -16,7 +16,7 @@ public class AuthService
 
     public async Task<string?> LoginAsync(string username, string password)
     {
-        var loginRequest = new
+        /*var loginRequest = new
         {
             Username = username,
             Password = password
@@ -25,16 +25,19 @@ public class AuthService
         var jsonContent = new StringContent(
             JsonSerializer.Serialize(loginRequest),
             Encoding.UTF8,
-            "application/json");       
+            "application/json");       */
 
-        var response = await _httpClient.PostAsync(ApiRoutes.Auth.Login, jsonContent);
-
+        var response = await _httpClient.PostAsJsonAsync(ApiRoutes.Auth.Login, new { username, password });
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadAsStringAsync();
+        
+        /*var response = await _httpClient.PostAsync(ApiRoutes.Auth.Login, jsonContent);
         if (response.IsSuccessStatusCode)
         {
             var responseBody = await response.Content.ReadAsStringAsync();
             return responseBody; // Return the token if the login is successful.
         }
 
-        return null; // Return null if login fails.
+        return null; // Return null if login fails. */
     }
 }
