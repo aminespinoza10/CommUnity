@@ -13,7 +13,7 @@ namespace AppVecinos.Web.Models
         [JsonPropertyName("user")]
         public string User { get; set; }
         [JsonPropertyName("password")]
-        public string Password { get; set; }
+        public string PasswordHash { get; set; }
         [JsonPropertyName("level")]
         public string Level { get; set; }
         [JsonPropertyName("status")]

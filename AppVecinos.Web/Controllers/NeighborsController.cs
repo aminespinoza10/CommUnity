@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using AppVecinos.Web.Services;
+using Microsoft.Extensions.Logging;
+using System;
 
 namespace AppVecinos.Web.Controllers
 {
@@ -65,9 +67,10 @@ namespace AppVecinos.Web.Controllers
             {
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch(Exception ex)
             {
-                return View();
+                 _logger.LogError(ex, "An error occurred while editing the neighbor.");
+                 return View();
             }
         }
 
@@ -86,8 +89,9 @@ namespace AppVecinos.Web.Controllers
             {
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch(Exception ex)
             {
+                _logger.LogError(ex, "An error occurred while deleting a neighbor.");
                 return View();
             }
         }

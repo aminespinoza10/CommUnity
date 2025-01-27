@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using AppVecinos.Web.Models;
+using Microsoft.Extensions.Logging;
 
 namespace AppVecinos.Web.Services;
 public class NeighborService: INeighborService
@@ -28,7 +29,7 @@ public class NeighborService: INeighborService
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             
             var response = await _httpClient.GetAsync(ApiRoutes.Neighbors.GetAll);
-            Console.WriteLine($"RESPUESTA: {response.Content.ReadAsStringAsync().Result}");
+            _logger.LogInformation($"RESPUESTA: {await response.Content.ReadAsStringAsync()}");
 
             if (response.IsSuccessStatusCode)
             {
