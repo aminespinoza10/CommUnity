@@ -7,8 +7,8 @@ public static class ApiRoutes
         public const string Login = "login";
     }
 
-    public static class Users
+    public static class Neighbors
     {
-        public const string GetAll = "neighbors";
+        public const string GetAll = BaseUrl + "neighbors";
     }
 }
