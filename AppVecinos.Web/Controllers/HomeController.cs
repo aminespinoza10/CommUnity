@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using AppVecinos.Web.Models;
+using System;
 
 namespace AppVecinos.Web.Controllers;
 
@@ -15,6 +16,13 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
+        var token = HttpContext.Session.GetString("AuthToken");
+        Console.WriteLine($"Token session: {token}");
+        if (string.IsNullOrEmpty(token))
+        {
+            return RedirectToAction("Login", "Account");
+        }
+
         return View();
     }
 

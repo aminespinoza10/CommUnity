@@ -46,3 +46,12 @@ button.accept-policy {
   white-space: nowrap;
   line-height: 60px;
 }
+
+.navbar-brand img {
+  height: 60px; 
+  margin-right: 5px; 
+}
+
+.text-gray {
+  color: #605f5b !important; /* dark gray */
+}

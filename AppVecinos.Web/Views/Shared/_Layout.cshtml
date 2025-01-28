@@ -14,7 +14,9 @@
         {
             <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Neighbors" asp-action="Index">AppVecinos.Web</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="/images/CommUnityLogo.png" alt="Logotipo" style="height: 50px;">
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -22,12 +24,17 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Neighbors" asp-action="Index">Home</a>
+                            <a class="nav-link text-gray" asp-area="" asp-controller="Neighbors" asp-action="Index">Vecinos</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+                            <a class="nav-link text-gray" asp-area="" asp-controller="Home" asp-action="Privacy">Cuotas</a>
+                        </li>                        
                     </ul>
+                    <form method="post" asp-action="Logout" asp-controller="Account" class="d-flex align-items-center">
+                        <button type="submit" class="btn btn-link p-0">
+                            <img src="/images/Salir.png" alt="Cerrar Sesión" style="height: 30px;" title="Cerrar Sesión">
+                        </button>
+                    </form>
                 </div>
             </div>
         </nav>
