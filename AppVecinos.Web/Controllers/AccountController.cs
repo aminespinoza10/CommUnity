@@ -38,4 +38,11 @@ public class AccountController : Controller
         ViewBag.ErrorMessage = "Usuario o contraseña incorrectos.";
         return View();
     }
+
+    [HttpPost]
+    public async Task<IActionResult> Logout()
+    {
+        HttpContext.Session.Remove("AuthToken");
+        return RedirectToAction("Login", "Account");
+    }
 }

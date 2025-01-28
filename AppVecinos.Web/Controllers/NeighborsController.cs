@@ -20,7 +20,10 @@ namespace AppVecinos.Web.Controllers
         {
             var token = HttpContext.Session.GetString("AuthToken");
             Console.WriteLine($"Token session: {token}");
-
+            if (string.IsNullOrEmpty(token))
+            {
+                return RedirectToAction("Login", "Account");
+            }
             var neighbors = await _neighborService.GetNeighborsAsync(token);
             return View(neighbors);
         }
