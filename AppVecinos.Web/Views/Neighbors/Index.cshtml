@@ -3,17 +3,17 @@
     ViewData["Title"] = "Neighbors";
 }
 
-<h2 class="text-center text-primary mt-5">Lista de vecinos</h2>
+<h2 class="text-center text-gray mt-5">Lista de vecinos</h2>
 
 <p>
-    <a asp-action="Create" class="btn btn-primary">
+    <a asp-action="Create" class="btn btn-turquoise">
         <i class="bi bi-plus-circle"></i> Agregar nuevo vecino
     </a>
 </p>
 
 
 <table class="table table-striped table-hover table-bordered text-center mt-4">
-    <thead class="table-primary">
+    <thead class="bg-turquoise text-white">
         <tr>
             <th>Nombre</th>
             <th>Número</th>
@@ -30,18 +30,17 @@
                 <td>@neighbor.Number</td>
                 <td>@neighbor.Level</td>
                 <td>
-                    <span class="badge @(neighbor.Status == "Activo" ? "bg-success" : "bg-danger")">
+                    <span class="badge @(neighbor.Status == "Activo" ? "bg-active" : "bg-inactive")">
                         @neighbor.Status
                     </span>
                 </td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@neighbor.Id" class="btn btn-info btn-sm">Detalles</a>
-                    <a asp-action="Edit" asp-route-id="@neighbor.Id" class="btn btn-warning btn-sm">Editar</a>
-                    <a asp-action="Delete" asp-route-id="@neighbor.Id" class="btn btn-danger btn-sm">Eliminar</a>
+                    <a asp-action="Details" asp-route-id="@neighbor.Id" class="btn btn-custom btn-sm">Detalles</a>
+                    <a asp-action="Edit" asp-route-id="@neighbor.Id" class="btn btn-edit btn-sm">Editar</a>
+                    <a asp-action="Delete" asp-route-id="@neighbor.Id" class="btn btn-delete btn-sm">Eliminar</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
-
 
