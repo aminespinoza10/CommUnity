@@ -46,3 +46,77 @@ input::placeholder {
   font-style: italic;
   color: #6c757d;
 }
+
+body {
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+.table-light {
+  background-color: #ffffff;
+  color: #333;
+}
+
+.bg-turquoise {
+  background-color: #676b6e;
+}
+
+.btn-turquoise {
+  background-color: #57bbb4;
+  color: white;
+  border: none;
+}
+
+.btn-turquoise:hover {
+  background-color: #32c4b0;
+  color: white;
+}
+
+.btn-custom {
+  background-color: #676b6e;
+  color: white;
+  border: none;
+}
+
+.btn-custom:hover {
+  background-color: #aab8bb;
+  color: white;
+}
+
+.btn-edit {
+  background-color: #93aaa2;
+  color: white;
+  border: none;
+}
+
+.btn-edit:hover {
+  background-color: #a7cec9;
+  color: white;
+}
+
+.btn-delete {
+  background-color: #d5ada4;
+  color: white;
+  border: none;
+}
+
+.btn-delete:hover {
+  background-color: #d95f49;
+  color: white;
+}
+
+.bg-inactive {
+  background-color: #d5ada4;
+  color: white;
+  border: none;
+}
+
+.bg-active {
+  background-color: #93aaa2;
+  color: white;
+  border: none;
+}
+
+.text-gray {
+  color: #676b6e !important; /* dark gray */
+}
