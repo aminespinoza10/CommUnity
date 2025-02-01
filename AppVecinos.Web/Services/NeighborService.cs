@@ -7,18 +7,15 @@ using AppVecinos.Web.Models;
 using Microsoft.Extensions.Logging;
 
 namespace AppVecinos.Web.Services;
-public class NeighborService: INeighborService
+public class NeighborService
 {
     private readonly HttpClient _httpClient;
-    private readonly IHttpContextAccessor  _httpContextAccessor;
     private readonly ILogger<NeighborService> _logger;
 
     public NeighborService(HttpClient httpClient, 
-    IHttpContextAccessor httpContextAccessor,
     ILogger<NeighborService> logger)
     {
         _httpClient = httpClient;
-        _httpContextAccessor = httpContextAccessor;
         _logger = logger;
     }
 
@@ -44,6 +41,30 @@ public class NeighborService: INeighborService
             }
         }
 
-        return Array.Empty<Neighbor>();
+        return new List<Neighbor>();
+    }
+
+    public async Task<Neighbor> AddNeighborAsync(Neighbor neighbor, string token)
+    {
+        if (!string.IsNullOrEmpty(token))
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var neighborJson = JsonSerializer.Serialize(neighbor);
+            var content = new StringContent(neighborJson, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync(ApiRoutes.Neighbors.Create, content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseBody = await response.Content.ReadAsStringAsync();
+                var neighborResponse = JsonSerializer.Deserialize<Neighbor>(responseBody);
+                return neighborResponse;
+            }
+            else
+            {
+                throw new Exception("Unable to add neighbor");
+            }
+        }
+
+        return null;
     }
 }
