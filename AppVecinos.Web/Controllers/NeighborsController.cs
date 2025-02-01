@@ -3,6 +3,7 @@ using AppVecinos.Web.Services;
 using Microsoft.Extensions.Logging;
 using System;
 using AppVecinos.Web.Models;
+using System.Threading.Tasks;
 
 namespace AppVecinos.Web.Controllers
 {
@@ -44,14 +45,14 @@ namespace AppVecinos.Web.Controllers
         // POST: NeighborsController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Neighbor neighbor)
+        public async Task<ActionResult> Create(Neighbor neighbor)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
                     var token = HttpContext.Session.GetString("AuthToken");
-                    var newNeighbor = _neighborService.AddNeighborAsync(neighbor, token);
+                    var newNeighbor = await _neighborService.AddNeighborAsync(neighbor, token);
                     if (newNeighbor != null)
                     {
                         return RedirectToAction(nameof(Index));
