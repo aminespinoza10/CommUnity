@@ -61,7 +61,7 @@ public class NeighborService
             }
             else
             {
-                throw new Exception("Unable to add neighbor");
+                throw new Exception("No fue posible agregar el vecino", new Exception(await response.Content.ReadAsStringAsync()));
             }
         }
 
