@@ -11,8 +11,7 @@ In order to deploy the required infrastructure for this solution you can take a 
 
 ## Requirements
 
-- You need to create a storage account to hold the remote stae for Terraform.
-
+- You need to create a storage account to hold the remote state for Terraform.
 ## Roadmap
 
 Create a CI/CD process to deploy the whole infrastructure
