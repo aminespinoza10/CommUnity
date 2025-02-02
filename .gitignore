@@ -367,21 +367,6 @@ ASALocalRun/
 # Local History for Visual Studio
 .localhistory/
 
-# Visual Studio History (VSHistory) files
-.vshistory/
-
-# BeatPulse healthcheck temp database
-healthchecksdb
-
-# Backup folder for Package Reference Convert tool in Visual Studio 2017
-MigrationBackup/
-
-# Ionide (cross platform F# VS Code tools) working folder
-.ionide/
-
-# Fody - auto-generated XML schema
-FodyWeavers.xsd
-
 # VS Code files for those working on multiple tools
 .vscode/*
 !.vscode/settings.json
@@ -393,12 +378,9 @@ FodyWeavers.xsd
 # Local History for Visual Studio Code
 .history/
 
-# Windows Installer files from build outputs
-*.cab
-*.msi
-*.msix
-*.msm
-*.msp
+# Terraform folders
+./.terraform/
 
-# JetBrains Rider
-*.sln.iml
+#Terraform variables files
+*.tfvars
+
