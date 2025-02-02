@@ -34,8 +34,10 @@ jobs:
       run: |
           docker push "$IMAGE_NAME"
 
+
+
     - name: Azure CLI login
-      uses: azure/login@V2
+      uses: Azure/login@v2.2.0
       with:
           creds: ${{secrets.AZURE_CREDENTIALS}}
 
