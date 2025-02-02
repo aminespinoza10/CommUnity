@@ -3,8 +3,6 @@ name: Deploy Vecinos API
 on:
   push:
     branches: [ "main" ]
-#    paths:
-#      - 'AppVecinos.API/**'
     
 jobs:
   build:
@@ -25,8 +23,8 @@ jobs:
         
     - name: Build API image
       run: | 
-        docker build --platform linux --tag aminespinoza/vecinosapi:latest .
+        docker build --platform linux --tag marcelamq/vecinosapi:latest .
         
     - name: Publish API image to Docker Hub
       run: |
-        docker push aminespinoza/vecinosapi
+        docker push marcelamq/vecinosapi
