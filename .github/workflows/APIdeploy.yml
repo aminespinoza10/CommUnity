@@ -3,6 +3,11 @@ name: Deploy Vecinos API
 on:
   push:
     branches: [ "main" ]
+
+env: 
+  SERVICE_NAME: neighborapi
+  RESOURCE_GROUP_NAME: dev-vecinos-rg
+  IMAGE_NAME: marcelamq/vecinosapi
     
 jobs:
   build:
@@ -23,8 +28,22 @@ jobs:
         
     - name: Build API image
       run: | 
-        docker build --platform linux --tag marcelamq/vecinosapi:latest .
+          docker build --platform linux --tag "$IMAGE_NAME":latest .
         
     - name: Publish API image to Docker Hub
       run: |
-        docker push marcelamq/vecinosapi
+          docker push "$IMAGE_NAME"
+
+    - name: Azure CLI login
+      uses: azure/login@V2
+      with:
+          creds: ${{secrets.AZURE_CREDENTIALS}}
+
+    - name: Install az containerapp extension
+      run: |
+          az config set extension.use_dynamic_install=yes_without_prompt
+
+    - name: Deploy API Container App
+      run: |
+          az containerapp up --name "$SERVICE_NAME" --resource-group "$RESOURCE_GROUP_NAME" --environment dev-vecinos-env --image docker.io/"$IMAGE_NAME":latest 
+          
