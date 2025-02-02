@@ -120,3 +120,10 @@ body {
 .text-gray {
   color: #676b6e !important; /* dark gray */
 }
+
+.card {
+  background-color: #f8f9fa;
+  border-radius: 10px;
+  max-width: 500px;
+  margin: auto;
+}

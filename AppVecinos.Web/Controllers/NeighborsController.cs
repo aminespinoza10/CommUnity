@@ -2,15 +2,17 @@ using Microsoft.AspNetCore.Mvc;
 using AppVecinos.Web.Services;
 using Microsoft.Extensions.Logging;
 using System;
+using AppVecinos.Web.Models;
+using System.Threading.Tasks;
 
 namespace AppVecinos.Web.Controllers
 {
     public class NeighborsController : Controller
     {
-        private readonly INeighborService _neighborService;
+        private readonly NeighborService _neighborService;
         private readonly ILogger<NeighborsController> _logger;
 
-        public NeighborsController(INeighborService neighborService, ILogger<NeighborsController> logger)
+        public NeighborsController(NeighborService neighborService, ILogger<NeighborsController> logger)
         {
             _neighborService = neighborService;
             _logger = logger;
@@ -43,15 +45,30 @@ namespace AppVecinos.Web.Controllers
         // POST: NeighborsController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> Create(Neighbor neighbor)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    var token = HttpContext.Session.GetString("AuthToken");
+                    var newNeighbor = await _neighborService.AddNeighborAsync(neighbor, token);
+                    if (newNeighbor != null)
+                    {
+                        return RedirectToAction(nameof(Index));
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
+                        return View(neighbor);
+                    }
+                }
+
+                return View(neighbor);
             }
             catch
             {
-                return View();
+                return View(neighbor);
             }
         }
 

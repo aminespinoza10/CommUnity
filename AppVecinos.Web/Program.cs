@@ -13,7 +13,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
-builder.Services.AddScoped<INeighborService, NeighborService>();
+builder.Services.AddHttpClient<NeighborService>();
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
