@@ -7,6 +7,7 @@ env:
   SERVICE_NAME: neighborweb
   RESOURCE_GROUP_NAME: dev-vecinos-rg
   IMAGE_NAME: marcelamq/vecinosweb
+  DOCKER_IMAGE: docker.io/marcelamq/vecinosweb:latest
   
 jobs:
   build:
@@ -44,4 +45,4 @@ jobs:
 
     - name: Deploy Web Container App
       run: |
-          az containerapp up --name "$SERVICE_NAME" --resource-group "$RESOURCE_GROUP_NAME" --environment dev-vecinos-env --image docker.io/"$IMAGE_NAME":latest 
+          az containerapp up --name "$SERVICE_NAME" --resource-group "$RESOURCE_GROUP_NAME" --environment dev-vecinos-env --image "$DOCKER_IMAGE"
