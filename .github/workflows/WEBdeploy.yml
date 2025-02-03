@@ -3,7 +3,11 @@ name: Deploy Vecinos Web
 on:
   push:
     branches: [ "main" ]
-    
+env: 
+  SERVICE_NAME: neighborweb
+  RESOURCE_GROUP_NAME: dev-vecinos-rg
+  IMAGE_NAME: marcelamq/vecinosweb
+  
 jobs:
   build:
     name: Docker build
@@ -23,8 +27,21 @@ jobs:
         
     - name: Build WebApp image
       run: | 
-        docker build --platform linux --tag marcelamq/vecinosweb:latest .
+        docker build --platform linux --tag "$IMAGE_NAME":latest .
         
     - name: Publish WebApp image to Docker Hub
       run: |
-        docker push marcelamq/vecinosweb
+        docker push "$IMAGE_NAME"
+        
+    - name: Azure CLI login
+      uses: Azure/login@v2.2.0
+      with:
+          creds: ${{secrets.AZURE_CREDENTIALS}}
+
+    - name: Install az containerapp extension
+      run: |
+          az config set extension.use_dynamic_install=yes_without_prompt
+
+    - name: Deploy Web Container App
+      run: |
+          az containerapp up --name "$SERVICE_NAME" --resource-group "$RESOURCE_GROUP_NAME" --environment dev-vecinos-env --image docker.io/"$IMAGE_NAME":latest 
