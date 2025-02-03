@@ -3,6 +3,8 @@ name: Deploy Vecinos API
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - 'AppVecinos.API/**'
 
 env: 
   SERVICE_NAME: neighborapi
