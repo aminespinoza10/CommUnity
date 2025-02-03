@@ -3,6 +3,8 @@ name: Deploy Vecinos Web
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - 'AppVecinos.Web/**'
 env: 
   SERVICE_NAME: neighborweb
   RESOURCE_GROUP_NAME: dev-vecinos-rg
