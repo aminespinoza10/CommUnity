@@ -1,5 +1,6 @@
 using AppVecinos.API.Data;
 using AppVecinos.API.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace AppVecinos.API.Services
 {
@@ -36,13 +37,24 @@ namespace AppVecinos.API.Services
 
         public async Task<Neighbor> UpdateNeighborAsync(Neighbor neighbor)
         {
-            if (await _unitOfWork.NeighborRepository.GetByIdAsync(neighbor.Id) == null)
+            var neighborToUpdate = await _unitOfWork.NeighborRepository.GetByIdAsync(neighbor.Id);
+            if (neighborToUpdate == null)
             {
                 throw new KeyNotFoundException($"Neighbor with id {neighbor.Id} not found.");
             }
-            _unitOfWork.NeighborRepository.Update(neighbor);
-            await _unitOfWork.SaveAsync();
-            return neighbor;
+            else
+            {
+                neighborToUpdate.Name = neighbor.Name;
+                neighborToUpdate.Number = neighbor.Number;
+                neighborToUpdate.Level = neighbor.Level;
+                neighborToUpdate.User = neighbor.User;
+                neighborToUpdate.Password = neighbor.Password;
+                neighborToUpdate.Status = neighbor.Status;
+
+                _unitOfWork.NeighborRepository.Update(neighborToUpdate);
+                await _unitOfWork.SaveAsync();
+            }   
+            return neighborToUpdate;
         }
 
         public async Task DeleteNeighborAsync(int id)

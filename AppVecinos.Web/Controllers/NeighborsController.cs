@@ -73,19 +73,46 @@ namespace AppVecinos.Web.Controllers
         }
 
         // GET: NeighborsController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(int id)
         {
+            var token = HttpContext.Session.GetString("AuthToken");
+            var neighbor = await _neighborService.GetNeighborByIdAsync(id, token);
+            if (neighbor != null)
+            {
+                return View(neighbor);
+            }
             return View();
         }
 
         // POST: NeighborsController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Edit(Neighbor neighbor) 
         {
+            if (!ModelState.IsValid)
+            {
+                return View(neighbor);
+            }
             try
             {
-                return RedirectToAction(nameof(Index));
+                var token = HttpContext.Session.GetString("AuthToken");
+                if (string.IsNullOrEmpty(token))
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+                else
+                {
+                    var updatedNeighbor =  await _neighborService.EditNeighborAsync(neighbor, token);
+                    if (updatedNeighbor != null)
+                    {
+                        return RedirectToAction(nameof(Index));
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "Error del servidor. Por favor contacte al administrador.");
+                        return View(neighbor);
+                    }
+                }
             }
             catch(Exception ex)
             {

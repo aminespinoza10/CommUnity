@@ -1,0 +1,53 @@
+@model AppVecinos.Web.Models.Neighbor
+
+@{
+    ViewData["Title"] = "Editar Vecino";
+}
+
+<h2 class="text-center text-gray mt-5">Editar Vecino</h2>
+
+<div class="container">
+    <div class="card p-4 shadow">
+        <form asp-action="Edit">
+            <input type="hidden" asp-for="Id" />
+            
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label">Nombre</label>
+                <input asp-for="Name" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Number" class="form-label">Número</label>
+                <input asp-for="Number" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Level" class="form-label">Nivel</label>
+                <input asp-for="Level" class="form-control" required />
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="User" class="form-label">Usuario</label>
+                <input asp-for="User" class="form-control" required />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="PasswordHash" class="form-label">Contraseña</label>
+                <input asp-for="PasswordHash" class="form-control" required />
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="Status" class="form-label">Estado</label>
+                <select asp-for="Status" class="form-select">
+                    <option value="Activo">Activo</option>
+                    <option value="Inactivo">Inactivo</option>
+                </select>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a asp-action="Index" class="btn btn-delete">Cancelar</a>
+                <button type="submit" class="btn btn-turquoise">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
