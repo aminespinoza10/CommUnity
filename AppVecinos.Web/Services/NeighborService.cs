@@ -25,7 +25,7 @@ public class NeighborService
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             
-            var response = await _httpClient.GetAsync(ApiRoutes.Neighbors.GetAll);
+            var response = await _httpClient.GetAsync(ApiRoutes.Neighbors.NeighborsEndpoint);
             _logger.LogInformation($"RESPUESTA: {await response.Content.ReadAsStringAsync()}");
 
             if (response.IsSuccessStatusCode)
@@ -51,7 +51,7 @@ public class NeighborService
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var neighborJson = JsonSerializer.Serialize(neighbor);
             var content = new StringContent(neighborJson, Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync(ApiRoutes.Neighbors.Create, content);
+            var response = await _httpClient.PostAsync(ApiRoutes.Neighbors.NeighborsEndpoint, content);
 
             if (response.IsSuccessStatusCode)
             {
@@ -75,7 +75,7 @@ public class NeighborService
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var neighborJson = JsonSerializer.Serialize(neighbor);
             var content = new StringContent(neighborJson, Encoding.UTF8, "application/json");
-            var response = await _httpClient.PutAsync(ApiRoutes.Neighbors.Edit, content);
+            var response = await _httpClient.PutAsync(ApiRoutes.Neighbors.NeighborsEndpoint, content);
 
             if (response.IsSuccessStatusCode)
             {
@@ -97,11 +97,15 @@ public class NeighborService
         if (!string.IsNullOrEmpty(token))
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var response = await _httpClient.GetAsync($"{ApiRoutes.Neighbors.GetNeighborById}/{id}");
+            var response = await _httpClient.GetAsync($"{ApiRoutes.Neighbors.NeighborsEndpoint}/{id}");
             if (response.IsSuccessStatusCode)
             {
                 var responseBody = await response.Content.ReadAsStringAsync();
                 var neighbor = JsonSerializer.Deserialize<Neighbor>(responseBody);
+                if (neighbor == null)
+                {
+                    throw new Exception("El vecino deserializado es nulo.");
+                }
                 return neighbor;
             }
             else
@@ -109,6 +113,20 @@ public class NeighborService
                 throw new Exception("No fue posible obtener el vecino", new Exception(await response.Content.ReadAsStringAsync()));
             }
         }
-       return null;       
+       throw new ArgumentException("El token no puede ser nulo o vacío", nameof(token));       
+    }
+
+    public async Task DeleteNeighborAsync(int id, string token)
+    {
+        if (!string.IsNullOrEmpty(token))
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var response = await _httpClient.DeleteAsync($"{ApiRoutes.Neighbors.NeighborsEndpoint}/{id}");
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception("No fue posible eliminar el vecino", new Exception(await response.Content.ReadAsStringAsync()));
+            }
+            return;
+        }
     }
 }

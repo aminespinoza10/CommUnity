@@ -9,10 +9,7 @@ public static class ApiRoutes
 
     public static class Neighbors
     {
-        public const string GetAll = BaseUrl + "neighbors";
-        public const string Create = BaseUrl + "neighbors";
-        public const string Edit = BaseUrl + "neighbors";
-        public const string GetNeighborById = BaseUrl + "neighbors";
+        public const string NeighborsEndpoint = "neighbors";
     }
 
 }

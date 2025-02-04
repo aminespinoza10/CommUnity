@@ -1,0 +1,47 @@
+@model AppVecinos.Web.Models.Neighbor
+
+@{
+    ViewData["Title"] = "Eliminar Vecino";
+}
+
+<h2 class="text-center text-gray mt-5">Eliminar Vecino</h2>
+
+<div class="container">
+    <div class="card p-4 shadow">
+        <p class="text-center">¿Estás seguro de que deseas eliminar al vecino <strong>@Model.Name</strong>?</p>
+        
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="Id" />
+            
+            <div class="mb-3">
+                <label class="form-label">Nombre</label>
+                <input asp-for="Name" class="form-control" disabled />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Número</label>
+                <input asp-for="Number" class="form-control" disabled />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Nivel</label>
+                <input asp-for="Level" class="form-control" disabled />
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Usuario</label>
+                <input asp-for="User" class="form-control" disabled />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Estado</label>
+                <input asp-for="Status" class="form-control" disabled />
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a asp-action="Index" class="btn btn-edit">Cancelar</a>
+                <button type="submit" class="btn btn-delete">Eliminar</button>
+            </div>
+        </form>
+    </div>
+</div>

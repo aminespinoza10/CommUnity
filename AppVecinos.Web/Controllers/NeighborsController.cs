@@ -76,6 +76,11 @@ namespace AppVecinos.Web.Controllers
         public async Task<ActionResult> Edit(int id)
         {
             var token = HttpContext.Session.GetString("AuthToken");
+            if (string.IsNullOrEmpty(token))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            
             var neighbor = await _neighborService.GetNeighborByIdAsync(id, token);
             if (neighbor != null)
             {
@@ -122,23 +127,42 @@ namespace AppVecinos.Web.Controllers
         }
 
         // GET: NeighborsController/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
+            var token = HttpContext.Session.GetString("AuthToken");
+            if (string.IsNullOrEmpty(token))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            
+            var neighbor = await _neighborService.GetNeighborByIdAsync(id, token);
+            if (neighbor != null)
+            {
+                return View(neighbor);
+            }
+
             return View();
         }
 
         // POST: NeighborsController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> Delete(int id, Neighbor neighbor)
         {
             try
             {
+                var token = HttpContext.Session.GetString("AuthToken");
+                if (string.IsNullOrEmpty(token))
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+                
+                await _neighborService.DeleteNeighborAsync(id, token);
                 return RedirectToAction(nameof(Index));
             }
             catch(Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while deleting a neighbor.");
+                _logger.LogError(ex, "Ocurrió un error al eliminar un vecino.");
                 return View();
             }
         }
