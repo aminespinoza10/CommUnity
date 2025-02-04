@@ -85,7 +85,7 @@ public class NeighborService
             }
             else
             {
-                throw new Exception("No fue posible editar el vecino", new Exception(await response.Content.ReadAsStringAsync()));
+                throw new Exception("No se pudo editar el vecino debido a un error del servidor.", new Exception(await response.Content.ReadAsStringAsync()));
             }
         }
 
