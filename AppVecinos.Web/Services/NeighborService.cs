@@ -67,4 +67,48 @@ public class NeighborService
 
         return null;
     }
+
+    public  async Task<Neighbor> EditNeighborAsync(Neighbor neighbor, string token)
+    {
+        if (!string.IsNullOrEmpty(token))
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var neighborJson = JsonSerializer.Serialize(neighbor);
+            var content = new StringContent(neighborJson, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PutAsync(ApiRoutes.Neighbors.Edit, content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseBody = await response.Content.ReadAsStringAsync();
+                var neighborResponse = JsonSerializer.Deserialize<Neighbor>(responseBody);
+                return neighborResponse;
+            }
+            else
+            {
+                throw new Exception("No se pudo editar el vecino debido a un error del servidor.", new Exception(await response.Content.ReadAsStringAsync()));
+            }
+        }
+
+        return null;
+    }
+
+    public async Task<Neighbor> GetNeighborByIdAsync(int id, string token)
+    {
+        if (!string.IsNullOrEmpty(token))
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var response = await _httpClient.GetAsync($"{ApiRoutes.Neighbors.GetNeighborById}/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                var responseBody = await response.Content.ReadAsStringAsync();
+                var neighbor = JsonSerializer.Deserialize<Neighbor>(responseBody);
+                return neighbor;
+            }
+            else
+            {
+                throw new Exception("No fue posible obtener el vecino", new Exception(await response.Content.ReadAsStringAsync()));
+            }
+        }
+       return null;       
+    }
 }

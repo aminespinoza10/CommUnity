@@ -1,6 +1,6 @@
 public static class ApiRoutes
 {
-    public const string BaseUrl = "http://localhost:5081/";
+    public const string BaseUrl = "https://neighborapi.blackbeach-49468bd1.eastus2.azurecontainerapps.io/";
     
     public static class Auth
     {
@@ -11,6 +11,8 @@ public static class ApiRoutes
     {
         public const string GetAll = BaseUrl + "neighbors";
         public const string Create = BaseUrl + "neighbors";
+        public const string Edit = BaseUrl + "neighbors";
+        public const string GetNeighborById = BaseUrl + "neighbors";
     }
 
 }
