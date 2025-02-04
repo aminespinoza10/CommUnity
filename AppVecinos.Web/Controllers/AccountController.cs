@@ -28,9 +28,17 @@ public class AccountController : Controller
         if (response != null)
         {
             var authResponse = JsonSerializer.Deserialize<AuthResponse>(response);
-            var token = authResponse.token;
-            Console.WriteLine($"Token generado: {token}");
-            HttpContext.Session.SetString("AuthToken", token);
+            if (authResponse != null)
+            {
+                var token = authResponse.token;
+                Console.WriteLine($"Token generado: {token}");
+                HttpContext.Session.SetString("AuthToken", token);
+            }
+            else
+            {
+                ViewBag.ErrorMessage = "Error al procesar la respuesta de autenticación.";
+                return View();
+            }
 
             return RedirectToAction("Index", "Home");
         }

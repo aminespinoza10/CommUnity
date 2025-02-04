@@ -9,11 +9,16 @@ builder.Services.AddHttpClient<AuthService>(client =>
 {
     client.BaseAddress = new Uri(ApiRoutes.BaseUrl);
 });
+builder.Services.AddHttpClient<NeighborService>(client =>
+{
+    client.BaseAddress = new Uri(ApiRoutes.BaseUrl);
+});
+
 builder.Services.AddHttpContextAccessor();
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
-builder.Services.AddHttpClient<NeighborService>();
+
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
