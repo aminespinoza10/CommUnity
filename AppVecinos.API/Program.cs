@@ -9,7 +9,10 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-
+public class Program
+{
+    public static void Main(string[] args)
+    {
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -359,3 +362,5 @@ app.MapGet("/balances/period/{period}", async (IBalanceService service, string p
 #endregion
 
 app.Run();
+    }
+}
