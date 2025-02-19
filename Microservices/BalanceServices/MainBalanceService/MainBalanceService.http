@@ -1,0 +1,6 @@
+@MainBalanceService_HostAddress = http://localhost:5077
+
+GET {{MainBalanceService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
