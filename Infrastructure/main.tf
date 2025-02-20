@@ -7,7 +7,7 @@ resource "azurerm_container_app_environment" "container_app_environment" {
   name                           = "${var.prefix}-commUnity-env"
   location                       = azurerm_resource_group.rg.location
   resource_group_name            = azurerm_resource_group.rg.name
-  zone_redundancy_enabled        = false
+  #zone_redundancy_enabled        = false
   
   workload_profile {
     name                  = "Consumption"
@@ -42,3 +42,4 @@ resource "azurerm_servicebus_queue" "monthly_servicebus_queue" {
 
   partitioning_enabled = true
 }
+
