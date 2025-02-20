@@ -22,8 +22,8 @@ app.MapGet("/balance", (string? year, string? month) =>
 {
     if(string.IsNullOrEmpty(year) && !string.IsNullOrEmpty(month))
     {
-        // Call MonthtlyBalanceService
-        var response = new { ServiceTarget = "MonthtlyBalanceService" };
+        // Call MonthlyBalanceService
+        var response = new { ServiceTarget = "MonthlyBalanceService" };
         return Results.Json(response);
     }
     else if(!string.IsNullOrEmpty(year) && string.IsNullOrEmpty(month))
