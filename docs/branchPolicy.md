@@ -42,3 +42,5 @@ gitGraph
     commit
     commit
 ```
+
+Así es cómo deben funcionar las ramas dentro del proyecto y siempre ser unificadsa por medio de **Pull Requests**.
