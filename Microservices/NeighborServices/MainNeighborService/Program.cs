@@ -1,4 +1,10 @@
+using CommonData.Models;
+using CommonData.Data;
+using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -15,6 +21,28 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.MapPost("/neighbor", async (Neighbor neighbor) =>
+{
+    if (neighbor == null)
+    {
+        return Results.BadRequest();
+    }
+    if (neighbor.Level == "Admin")
+    {
+        // Call CreateUserService
+        var response = new { ServiceTarget = "CreateUserService" };
+        return Results.Json(response);
+    }
+    else
+    {
+        // Call CreateNeighborService
+        var response = new { ServiceTarget = "CreateNeighborService" };
+        return Results.Json(response);
+    }
+})
+.WithName("PostNeighbor")
+.WithOpenApi();
 
 var summaries = new[]
 {
