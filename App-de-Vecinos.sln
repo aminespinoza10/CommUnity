@@ -7,6 +7,20 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppVecinos.API", "AppVecino
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppVecinos.Web", "AppVecinos.Web\AppVecinos.Web.csproj", "{938FD9BF-960F-4FCA-81BD-D03346DA4600}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Microservices", "Microservices", "{52789524-FFD2-4A07-B2E2-3EA1B8881AD4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NeighborServices", "NeighborServices", "{9982E826-D0D0-406A-8228-99E54ADF4540}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MainNeighborService", "Microservices\NeighborServices\MainNeighborService\MainNeighborService.csproj", "{991699EA-DF41-4E68-A535-0620C5496BBF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreateNeighborService", "Microservices\NeighborServices\CreateNeighborService\CreateNeighborService.csproj", "{9C19B3EC-8836-423D-9662-CA042BA9DC09}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreateUserService", "Microservices\NeighborServices\CreateUserService\CreateUserService.csproj", "{D09BDEA0-BEE2-4A32-9920-3C9BFB3163E6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeighborValidationService", "Microservices\NeighborServices\NeighborValidationService\NeighborValidationService.csproj", "{3C5DB8DA-39ED-4707-8F03-53D988516763}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonData", "Microservices\CommonData\CommonData.csproj", "{3DE3C7A6-F7B6-49F3-AA8A-3285462BF2B3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,11 +35,39 @@ Global
 		{938FD9BF-960F-4FCA-81BD-D03346DA4600}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{938FD9BF-960F-4FCA-81BD-D03346DA4600}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{938FD9BF-960F-4FCA-81BD-D03346DA4600}.Release|Any CPU.Build.0 = Release|Any CPU
+		{991699EA-DF41-4E68-A535-0620C5496BBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{991699EA-DF41-4E68-A535-0620C5496BBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{991699EA-DF41-4E68-A535-0620C5496BBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{991699EA-DF41-4E68-A535-0620C5496BBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C19B3EC-8836-423D-9662-CA042BA9DC09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C19B3EC-8836-423D-9662-CA042BA9DC09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C19B3EC-8836-423D-9662-CA042BA9DC09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C19B3EC-8836-423D-9662-CA042BA9DC09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D09BDEA0-BEE2-4A32-9920-3C9BFB3163E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D09BDEA0-BEE2-4A32-9920-3C9BFB3163E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D09BDEA0-BEE2-4A32-9920-3C9BFB3163E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D09BDEA0-BEE2-4A32-9920-3C9BFB3163E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C5DB8DA-39ED-4707-8F03-53D988516763}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C5DB8DA-39ED-4707-8F03-53D988516763}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C5DB8DA-39ED-4707-8F03-53D988516763}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C5DB8DA-39ED-4707-8F03-53D988516763}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DE3C7A6-F7B6-49F3-AA8A-3285462BF2B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DE3C7A6-F7B6-49F3-AA8A-3285462BF2B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DE3C7A6-F7B6-49F3-AA8A-3285462BF2B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DE3C7A6-F7B6-49F3-AA8A-3285462BF2B3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {01F0F3CE-B7B6-4A55-9953-791A3851422E}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9982E826-D0D0-406A-8228-99E54ADF4540} = {52789524-FFD2-4A07-B2E2-3EA1B8881AD4}
+		{991699EA-DF41-4E68-A535-0620C5496BBF} = {9982E826-D0D0-406A-8228-99E54ADF4540}
+		{9C19B3EC-8836-423D-9662-CA042BA9DC09} = {9982E826-D0D0-406A-8228-99E54ADF4540}
+		{D09BDEA0-BEE2-4A32-9920-3C9BFB3163E6} = {9982E826-D0D0-406A-8228-99E54ADF4540}
+		{3C5DB8DA-39ED-4707-8F03-53D988516763} = {9982E826-D0D0-406A-8228-99E54ADF4540}
+		{3DE3C7A6-F7B6-49F3-AA8A-3285462BF2B3} = {52789524-FFD2-4A07-B2E2-3EA1B8881AD4}
 	EndGlobalSection
 EndGlobal
