@@ -75,7 +75,7 @@ namespace AppVecinos.API.Tests
             // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             var responseContent = await response.Content.ReadAsStringAsync();
-            Assert.Contains("Token", responseContent);
+            Assert.Contains("token", responseContent);
 
             // Verify service was called with correct parameters
             mockNeighborService.Verify(
