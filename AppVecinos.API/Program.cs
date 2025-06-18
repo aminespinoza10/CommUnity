@@ -359,3 +359,6 @@ app.MapGet("/balances/period/{period}", async (IBalanceService service, string p
 #endregion
 
 app.Run();
+
+// Make the implicit Program class public for testing
+public partial class Program { }
